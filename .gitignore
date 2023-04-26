@@ -1,0 +1,6 @@
+.DS_Store
+.idea/
+.vscode/
+
+src/application/config/main.php
+src/application/config/database.php

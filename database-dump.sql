@@ -1,0 +1,14 @@
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+CREATE TABLE `users` (
+  `id` int UNSIGNED NOT NULL,
+  `username` varchar(32) DEFAULT NULL,
+  `changed_at` int UNSIGNED NOT NULL DEFAULT '0',
+  `created_at` int UNSIGNED NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+COMMIT;
