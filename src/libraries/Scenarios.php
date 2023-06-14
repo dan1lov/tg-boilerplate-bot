@@ -84,7 +84,8 @@ class Scenarios
             return $this->data[$name];
         }
 
-        return null;
+        $null = null;
+        return $null;
     }
 
     public function __isset($name) {

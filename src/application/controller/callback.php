@@ -63,9 +63,9 @@ function __update_callback(object $data): void {
     switch (true) {
         case json_last_error() === JSON_ERROR_NONE:
             $payload = (object)[
-                'command' => $decoded_data[0],
-                'action' => $decoded_data[1],
-                'related_id' => $decoded_data[2],
+                'command' => $decoded_data[0] ?? null,
+                'action' => $decoded_data[1] ?? null,
+                'related_id' => $decoded_data[2] ?? null,
             ];
 
             $is_correct = true;
