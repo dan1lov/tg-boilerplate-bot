@@ -191,3 +191,8 @@ function getCurrentMessageId(): int {
     $message = $data->message ?? $data->callback_query->message;
     return $message->message_id ?? 0;
 }
+
+function getEnteredText(): ?string {
+    global $data;
+    return $data->message->text ?? null;
+}

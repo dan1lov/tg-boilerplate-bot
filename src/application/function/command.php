@@ -55,8 +55,8 @@ function botCommand_signup(mixed $payload, mixed $temp): array {
 
     switch ($action) {
         case 'enter':
-            $text = $GLOBALS['data']->message->text;
-            if (empty($text)) {
+            $text = getEnteredText();
+            if (!isset($text)) {
                 $temp->save();
 
                 return [getTemplate('signup.empty-username')];
