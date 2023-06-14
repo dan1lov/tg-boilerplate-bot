@@ -14,14 +14,12 @@ function createUser(int $user_id, string $username = null): bool|object {
     return getUser($user_id);
 }
 
-function saveUser(object $user): void {
-    $skip_fields = ['id', 'changed_at', 'created_at'];
+function saveUser(object $user, array $skip_fields = []): void {
     saveObjectToDatabase($user, 'users', 'id', $skip_fields);
 }
 
 # -- get
 function getUserOrCreate(int $user_id): bool|object {
-    // TODO: introduce `last_active`
     return getUser($user_id) ?: createUser($user_id);
 }
 
@@ -34,17 +32,12 @@ function getUser(int $user_id): array|bool|object {
     // *optional* special actions on the object
     $user['username'] ??= getTemplate('part.default-username');
 
-    return new Scenarios(PATH_SCENARIOS, "userObject-$user_id", $user);
+    return new Scenarios(PATH_SCENARIOS, "UserObject-$user_id", $user);
 }
 
 function getUsers(mixed $user_ids): array {
-    $user_ids = asArray($user_ids);
-    if (empty($user_ids)) {
-        return [];
-    }
-
     $users = [];
-    foreach ($user_ids as $user_id) {
+    foreach (asArray($user_ids) as $user_id) {
         $user = getUser($user_id);
         if (empty($user)) {
             continue;

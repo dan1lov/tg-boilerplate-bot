@@ -14,6 +14,7 @@ function saveObjectToDatabase(
     $fields = [];
     $params = [];
 
+    $skip_fields = array_merge($skip_fields, ['id', 'changed_at', 'created_at']);
     foreach (exportOrderObjectData($object) as $k => $v) {
         if (in_array($k, $skip_fields)) {
             continue;
