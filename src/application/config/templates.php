@@ -17,13 +17,17 @@
     # -- system
     'template.system.error-bearer' => 'Неверный Bearer-токен',
     'template.system.error-internal' => 'Внутренняя ошибка',
+    'template.system.error-occurred' => 'Произошла ошибка, попробуйте ещё раз.',
     'template.system.error-route' => 'Неверный метод',
+    'template.system.error-wrong-command' => 'Команда не найдена, введите /start',
 
     # -- default
-    'template.default.unknown-command' => 'Команда не найдена',
+    // empty
 
-    # -- commands
-    'template.menu.aliases' => ['menu', 'меню'],
+    # -- commands general
+    'template.cancel.aliases' => ['/cancel', '/отмена'],
+
+    'template.menu.aliases' => ['/start', '/menu'],
     'template.menu.default' => 'Hello, %s!',
     'template.menu.image' => 'AgACAgQAAxkDAAIBBmRJAAFg1o5K1vxhZqnBkWLpYMORZwAC5q8xG6vSTFIMu2cjIm0DUQEAAwIAA3MAAy8E',
 

@@ -2,11 +2,18 @@
 
 function getBotCommands(): array {
     return [
+        // -- general
+        'cancel' => [ // need on first place, not move
+            'aliases' => getTemplate('cancel.aliases'),
+            'function' => 'botCommand_cancel',
+            'fromAdminLevel' => 0,
+        ],
         'menu' => [ // required command, do not remove
             'aliases' => getTemplate('menu.aliases'),
             'function' => 'botCommand_menu',
             'fromAdminLevel' => 0,
         ],
+
         'snackbar' => [
             'aliases' => getTemplate('snackbar.aliases'),
             'function' => 'botCommand_snackbar',
@@ -23,6 +30,15 @@ function getBotCommands(): array {
             'fromAdminLevel' => 0,
         ],
     ];
+}
+
+# -- general
+function botCommand_cancel(mixed $payload, mixed $temp): array {
+    if (!empty($temp)) {
+        $temp->clear();
+    }
+
+    return botCommand_menu();
 }
 
 function botCommand_menu(): array {

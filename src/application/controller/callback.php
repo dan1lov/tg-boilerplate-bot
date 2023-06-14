@@ -32,14 +32,20 @@ function __update_message(object $data): void {
         $deny = $ual < $command['fromAdminLevel'];
         $strict = $temp !== false && $temp->command !== $key;
 
-        $word_trigger = strposArray($message_lower, $command['aliases']) !== 0;
-        $not_this = $temp === false && $word_trigger;
+        $word_trigger = strposArray($message_lower, $command['aliases']) === 0;
+        $not_this = $temp === false && !$word_trigger;
+
+        if ($key === 'cancel' && $word_trigger) {
+            // $not_this already false
+            $strict = false;
+        }
 
         if (!$exists || $deny || $strict || $not_this) {
             continue;
         }
 
-        $message = $command['function'](null, $temp);
+        $payload = (object)['command' => $key];
+        $message = $command['function']($payload, $temp);
         break;
     }
 
@@ -103,6 +109,6 @@ function __update_callback(object $data): void {
 
     request('answerCallbackQuery', [
         'callback_query_id' => $data->callback_query->id,
-        'text' => getTemplate('default.unknown-command'),
+        'text' => getTemplate('system.error-wrong-command'),
     ]);
 }
