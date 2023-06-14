@@ -31,7 +31,7 @@
     'template.snackbar.default' => 'This is snackbar! 🍫',
 
     'template.second-page.aliases' => ['second', 'вторая'],
-    'template.second-page.default' => '👾 second page:',
+    'template.second-page.default' => '👾 second page (raw buttons):',
 
     'template.signup.aliases' => ['signup', 'регистрация'],
     'template.signup.cancel' => 'signup cancelled!',

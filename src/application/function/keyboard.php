@@ -1,6 +1,6 @@
 <?php
 
-// generator
+# -- generator
 function getKeyboardByCallbackData(array $callback_data, int $mode = 0): string {
     $buttons = [];
 
@@ -8,10 +8,19 @@ function getKeyboardByCallbackData(array $callback_data, int $mode = 0): string 
         foreach ($row_data as $col => $data) {
             $is_link = array_key_exists('link', $data);
 
-            $buttons[$row][$col] = $mode === KEYBOARD_INLINE
+            $button_label = array_shift($data); // always before `raw_allowed`
+            $raw_allowed = $mode & KEYBOARD_RAW && count($data) <= 3;
+            $raw_data = json_encode(array_values($data));
+
+            $inline_data = match (true) {
+                $mode & KEYBOARD_RAW && $raw_allowed => $raw_data,
+                default => "$row-$col",
+            };
+
+            $buttons[$row][$col] = $mode & KEYBOARD_INLINE
                 ? getButtonInline(
-                    $data['button-label'],
-                    data: !$is_link ? "$row-$col" : null,
+                    $button_label,
+                    data: !$is_link ? $inline_data : null,
                     link: $is_link ? $data['link'] : null,
                 )
                 : getButton($data['button-label']);
@@ -21,10 +30,8 @@ function getKeyboardByCallbackData(array $callback_data, int $mode = 0): string 
     return getKeyboard($buttons, $mode);
 }
 
-// menu
+# -- menu
 function getKeyboardMenuDefault(): string {
-    global $user_id;
-
     $data = [[
         [
             'button-label' => getTemplate('button.snackbar'),
@@ -41,14 +48,12 @@ function getKeyboardMenuDefault(): string {
         ],
     ]];
 
-    createCallbackData($user_id, $data);
+    createCallbackData($GLOBALS['user_id'], $data);
     return getKeyboardByCallbackData($data, KEYBOARD_INLINE);
 }
 
-// second page
+# -- second page
 function getKeyboardSecondPageDefault(): string {
-    global $user_id;
-
     $data = [[
         [
             'button-label' => getTemplate('button.open-link'),
@@ -61,14 +66,12 @@ function getKeyboardSecondPageDefault(): string {
         ],
     ]];
 
-    createCallbackData($user_id, $data);
-    return getKeyboardByCallbackData($data, KEYBOARD_INLINE);
+    createCallbackData($GLOBALS['user_id'], $data);
+    return getKeyboardByCallbackData($data, KEYBOARD_INLINE | KEYBOARD_RAW);
 }
 
-// signup
+# -- signup
 function getKeyboardSignupConfirm(string $username): string {
-    global $user_id;
-
     $data = [[
         [
             'button-label' => getTemplate('button.yes'),
@@ -89,13 +92,11 @@ function getKeyboardSignupConfirm(string $username): string {
         ],
     ]];
 
-    createCallbackData($user_id, $data);
+    createCallbackData($GLOBALS['user_id'], $data);
     return getKeyboardByCallbackData($data, KEYBOARD_INLINE);
 }
 
 function getKeyboardSignupBack(): string {
-    global $user_id;
-
     $data = [[
         [
             'button-label' => getTemplate('button.to-start'),
@@ -103,6 +104,6 @@ function getKeyboardSignupBack(): string {
         ],
     ]];
 
-    createCallbackData($user_id, $data);
+    createCallbackData($GLOBALS['user_id'], $data);
     return getKeyboardByCallbackData($data, KEYBOARD_INLINE);
 }

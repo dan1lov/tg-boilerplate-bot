@@ -56,26 +56,46 @@ function __update_callback(object $data): void {
     $GLOBALS['user_id'] = getCurrentUserId();
     $GLOBALS['user'] = getUserOrCreate($GLOBALS['user_id']);
 
-    $GLOBALS['callback_data'] = getCallbackData($GLOBALS['user_id']);
-    [$row, $col] = explode('-', $data->callback_query->data);
+    $received_callback = $data->callback_query->data;
+    $decoded_data = json_decode($received_callback);
 
-    if (isset($GLOBALS['callback_data'][$row][$col])) {
-        $ual = 0;
+
+    switch (true) {
+        case json_last_error() === JSON_ERROR_NONE:
+            $payload = (object)[
+                'command' => $decoded_data[0],
+                'action' => $decoded_data[1],
+                'related_id' => $decoded_data[2],
+            ];
+
+            $is_correct = true;
+            break;
+        default:
+            [$row, $col] = explode('-', $data->callback_query->data);
+            $GLOBALS['callback_data'] = getCallbackData($GLOBALS['user_id']);
+
+            $payload = $GLOBALS['callback_data'][$row][$col] ?? null;
+            $is_correct = isset($GLOBALS['callback_data'][$row][$col]);
+            break;
+    }
+
+    if ($is_correct) {
+        $ual = $GLOBALS['user']->ual;
         $temp = Scenarios::check(PATH_SCENARIOS, $GLOBALS['user_id'], true);
 
         $commands = getBotCommands();
-        $payload = $GLOBALS['callback_data'][$row][$col];
         $command_id = $temp->command ?? $payload->command ?? 'menu';
 
-        if (isset($commands[$command_id])) {
-            $exists = function_exists($commands[$command_id]['function']);
-            $deny = $ual < $commands[$command_id]['fromAdminLevel'];
+        $command = $commands[$command_id] ?? null;
+        if (isset($command)) {
+            $exists = function_exists($command['function']);
+            $deny = $ual < $command['fromAdminLevel'];
 
             if (!$exists || $deny) {
                 die('ok');
             }
 
-            $message = $commands[$command_id]['function']($payload, $temp);
+            $message = $command['function']($payload, $temp);
             processingCallbackQuery($data, generateEventData($message));
             return;
         }
