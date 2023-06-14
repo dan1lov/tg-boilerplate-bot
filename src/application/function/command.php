@@ -36,12 +36,10 @@ function botCommand_menu(): array {
 }
 
 function botCommand_snackbar(): array {
-    global $callback_data, $user_id;
-
-    createCallbackData($user_id, $callback_data);
-    $message = getTemplate('snackbar.default');
-
-    return [$message, MESSAGE_ACTION_SNACKBAR];
+    return [
+        getTemplate('snackbar.default'),
+        MESSAGE_ACTION_SNACKBAR,
+    ];
 }
 
 function botCommand_secondPage(): array {
@@ -52,14 +50,13 @@ function botCommand_secondPage(): array {
 }
 
 function botCommand_signup(mixed $payload, mixed $temp): array {
-    global $callback_data, $user;
+    global $user;
     $action = $temp->action ?? $payload->action ?? null;
 
     switch ($action) {
         case 'enter':
             $text = $GLOBALS['data']->message->text;
             if (empty($text)) {
-                createCallbackData($user->id, $callback_data);
                 $temp->save();
 
                 return [getTemplate('signup.empty-username')];

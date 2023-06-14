@@ -155,14 +155,9 @@ function createCallbackData(int $user_id, mixed $data): void {
 
 function getCallbackData(int $user_id): array {
     $filepath = getCallbackDataPath($user_id);
-    if (file_exists($filepath)) {
-        $data = json_decode(file_get_contents($filepath));
-        unlink($filepath);
-    } else {
-        $data = [];
-    }
-
-    return $data;
+    return file_exists($filepath)
+        ? json_decode(file_get_contents($filepath))
+        : [];
 }
 
 function getCallbackDataPath(int $user_id): string {
